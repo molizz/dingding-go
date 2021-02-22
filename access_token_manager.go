@@ -35,7 +35,7 @@ type DefaultAccessTokenManager struct {
 func (a *DefaultAccessTokenManager) Get(agentId string, f tokenExpiredFunc) (string, error) {
 	tokenRaw, ok := a.token.Load(agentId)
 	if !ok {
-		tk, err := a.store(agentId, f)
+		tk, err := a.refresh(agentId, f)
 		if err != nil {
 			return "", err
 		}
@@ -43,7 +43,7 @@ func (a *DefaultAccessTokenManager) Get(agentId string, f tokenExpiredFunc) (str
 	}
 	token := tokenRaw.(*accessTokenEntity)
 	if token.expired() {
-		tk, err := a.store(agentId, f)
+		tk, err := a.refresh(agentId, f)
 		if err != nil {
 			return "", err
 		}
@@ -52,7 +52,7 @@ func (a *DefaultAccessTokenManager) Get(agentId string, f tokenExpiredFunc) (str
 	return token.token, nil
 }
 
-func (a *DefaultAccessTokenManager) store(agentId string, f tokenExpiredFunc) (string, error) {
+func (a *DefaultAccessTokenManager) refresh(agentId string, f tokenExpiredFunc) (string, error) {
 	at, err := f(agentId)
 	if err != nil {
 		return "", err
