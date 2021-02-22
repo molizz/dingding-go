@@ -10,10 +10,10 @@ var (
 	ErrTokenExpired = errors.New("token expired")
 )
 
-type tokenExpiredFunc func(agentId string) (*AccessToken, error)
+type tokenFunc func(agentId string) (*AccessToken, error)
 
 type AccessTokenManager interface {
-	Get(agentId string, f tokenExpiredFunc) (string, error)
+	Get(agentId string, f tokenFunc) (string, error)
 }
 
 type accessTokenEntity struct {
@@ -32,7 +32,7 @@ type DefaultAccessTokenManager struct {
 	token sync.Map
 }
 
-func (a *DefaultAccessTokenManager) Get(agentId string, f tokenExpiredFunc) (string, error) {
+func (a *DefaultAccessTokenManager) Get(agentId string, f tokenFunc) (string, error) {
 	tokenRaw, ok := a.token.Load(agentId)
 	if !ok {
 		tk, err := a.refresh(agentId, f)
@@ -52,7 +52,7 @@ func (a *DefaultAccessTokenManager) Get(agentId string, f tokenExpiredFunc) (str
 	return token.token, nil
 }
 
-func (a *DefaultAccessTokenManager) refresh(agentId string, f tokenExpiredFunc) (string, error) {
+func (a *DefaultAccessTokenManager) refresh(agentId string, f tokenFunc) (string, error) {
 	at, err := f(agentId)
 	if err != nil {
 		return "", err
