@@ -86,3 +86,8 @@ type DepartmentMemberResponse struct {
 	apiResultBase
 	UserList []*memberInner `json:"userlist"`
 }
+
+type UserIDResponse struct {
+	apiResultBase
+	UserID string `json:"userid"`
+}
