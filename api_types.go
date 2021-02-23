@@ -70,6 +70,11 @@ type DepartmentResponse struct {
 	Order int `json:"order"`
 }
 
+type DepartmentMemeberCountResponse struct {
+	apiResultBase
+	UserIds []string `json:"userIds"`
+}
+
 type memberInner struct {
 	UserID      string `json:"userid"`
 	Name        string `json:"name"`

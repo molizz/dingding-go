@@ -11,6 +11,7 @@ const (
 	URLDepartmentList         = "https://oapi.dingtalk.com/department/list"
 	URLDepartmentMemberByPage = "https://oapi.dingtalk.com/user/listbypage"
 	URLDepartment             = "https://oapi.dingtalk.com/department/get"
+	URLDepartmentMemberIDs    = "https://oapi.dingtalk.com/user/getDeptMember"
 )
 
 type Api struct {
@@ -72,6 +73,7 @@ func (a *Api) SendTextMessage(msg string, toUserIDs []string) error {
 	return err
 }
 
+// DepartmentList 获取部门列表
 func (a *Api) DepartmentList(rootDepID int64) (*DepartmentsResponse, error) {
 	if rootDepID <= 0 {
 		rootDepID = 1
@@ -93,6 +95,7 @@ func (a *Api) DepartmentList(rootDepID int64) (*DepartmentsResponse, error) {
 	return depResponse, err
 }
 
+// DepartmentMembers
 // depID: 部门id
 // offset: 分页的偏移量,从0开始，每次加size
 // size: 每次返回的用户数量，最大100
@@ -116,7 +119,7 @@ func (a *Api) DepartmentMembers(depID int64, offset, size int) (*DepartmentMembe
 	return memberResponse, err
 }
 
-//
+// Department 部门详情
 func (a *Api) Department(depID int64) (*DepartmentResponse, error) {
 	accessToken, err := a.AccessToken()
 	if err != nil {
@@ -132,4 +135,25 @@ func (a *Api) Department(depID int64) (*DepartmentResponse, error) {
 	depResponse := new(DepartmentResponse)
 	_, err = httpGet(u, depResponse)
 	return depResponse, err
+}
+
+// DepartmentMembersCount 获取部门成员数量
+func (a *Api) DepartmentMembersCount(depID int64) (int, error) {
+	accessToken, err := a.AccessToken()
+	if err != nil {
+		return 0, err
+	}
+
+	u, _ := URLParse(
+		URLDepartmentMemberIDs,
+		"access_token", accessToken,
+		"deptId", strconv.FormatInt(depID, 10),
+	)
+
+	depResponse := new(DepartmentMemeberCountResponse)
+	_, err = httpGet(u, depResponse)
+	if err != nil {
+		return 0, err
+	}
+	return len(depResponse.UserIds), nil
 }
