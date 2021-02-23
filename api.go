@@ -80,9 +80,37 @@ func (a *Api) DepartmentList(rootDepID int64) (*DepartmentResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	u, _ := URLParse(URLDepartmentList, "access_token", accessToken, "id", strconv.Itoa(int(rootDepID)))
+
+	u, _ := URLParse(
+		URLDepartmentList,
+		"access_token", accessToken,
+		"id", strconv.FormatInt(rootDepID, 10),
+	)
 
 	depResponse := new(DepartmentResponse)
 	_, err = httpGet(u, depResponse)
 	return depResponse, err
+}
+
+// depID: 部门id
+// offset: 分页的偏移量,从0开始
+// size: 每次返回的用户数量
+//
+func (a *Api) DepartmentMembers(depID int64, offset, size int) (*DepartmentMemberResponse, error) {
+	accessToken, err := a.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	u, _ := URLParse(
+		URLDepartmentMemberByPage,
+		"access_token", accessToken,
+		"department_id", strconv.FormatInt(depID, 10),
+		"offset", strconv.FormatInt(int64(offset), 10),
+		"size", strconv.FormatInt(int64(size), 10),
+	)
+
+	memberResponse := new(DepartmentMemberResponse)
+	_, err = httpGet(u, memberResponse)
+	return memberResponse, err
 }

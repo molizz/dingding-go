@@ -63,3 +63,15 @@ type DepartmentResponse struct {
 	apiResultBase
 	Departments []*departmentInner `json:"department"`
 }
+
+type memberInner struct {
+	UserID      string `json:"userid"`
+	Name        string `json:"name"`
+	Departments []int  `json:"department"`
+	UnionID     string `json:"unionid"`
+	Email       string `json:"email"`
+}
+type DepartmentMemberResponse struct {
+	apiResultBase
+	UserList []*memberInner `json:"userlist"`
+}
