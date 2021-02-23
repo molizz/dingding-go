@@ -10,6 +10,7 @@ const (
 	URLSendMessage            = "https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2"
 	URLDepartmentList         = "https://oapi.dingtalk.com/department/list"
 	URLDepartmentMemberByPage = "https://oapi.dingtalk.com/user/listbypage"
+	URLDepartment             = "https://oapi.dingtalk.com/department/get"
 )
 
 type Api struct {
@@ -71,7 +72,7 @@ func (a *Api) SendTextMessage(msg string, toUserIDs []string) error {
 	return err
 }
 
-func (a *Api) DepartmentList(rootDepID int64) (*DepartmentResponse, error) {
+func (a *Api) DepartmentList(rootDepID int64) (*DepartmentsResponse, error) {
 	if rootDepID <= 0 {
 		rootDepID = 1
 	}
@@ -87,7 +88,7 @@ func (a *Api) DepartmentList(rootDepID int64) (*DepartmentResponse, error) {
 		"id", strconv.FormatInt(rootDepID, 10),
 	)
 
-	depResponse := new(DepartmentResponse)
+	depResponse := new(DepartmentsResponse)
 	_, err = httpGet(u, depResponse)
 	return depResponse, err
 }
@@ -113,4 +114,22 @@ func (a *Api) DepartmentMembers(depID int64, offset, size int) (*DepartmentMembe
 	memberResponse := new(DepartmentMemberResponse)
 	_, err = httpGet(u, memberResponse)
 	return memberResponse, err
+}
+
+//
+func (a *Api) Department(depID int64) (*DepartmentResponse, error) {
+	accessToken, err := a.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	u, _ := URLParse(
+		URLDepartmentMemberByPage,
+		"access_token", accessToken,
+		"id", strconv.FormatInt(depID, 10),
+	)
+
+	depResponse := new(DepartmentResponse)
+	_, err = httpGet(u, depResponse)
+	return depResponse, err
 }

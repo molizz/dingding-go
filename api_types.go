@@ -59,9 +59,15 @@ type departmentInner struct {
 	CreateDeptGroup bool   `json:"createDeptGroup"`
 	AutoAddUser     bool   `json:"autoAddUser"`
 }
-type DepartmentResponse struct {
+type DepartmentsResponse struct {
 	apiResultBase
 	Departments []*departmentInner `json:"department"`
+}
+
+type DepartmentResponse struct {
+	apiResultBase
+	departmentInner
+	Order int `json:"order"`
 }
 
 type memberInner struct {
