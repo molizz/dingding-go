@@ -1,6 +1,7 @@
 package dingding
 
 import (
+	"bytes"
 	"encoding/json"
 	"io"
 	"io/ioutil"
@@ -34,39 +35,38 @@ type HttpClientor interface {
 }
 
 func httpPost(uri *url.URL, in, out interface{}) (*http.Response, error) {
-	var body io.Reader
-	if in != nil {
-		body = in.(io.Reader)
-	}
-	req, err := http.NewRequest("POST", uri.String(), body)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-
-	resp, err := doHttp(req, in, out)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-	return resp, nil
+	resp, err := doHttp("POST", uri, in, out)
+	return resp, errors.WithStack(err)
 }
 
 func httpGet(uri *url.URL, out interface{}) (*http.Response, error) {
-	req, err := http.NewRequest("GET", uri.String(), nil)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-
-	resp, err := doHttp(req, nil, out)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-	return resp, nil
+	resp, err := doHttp("GET", uri, nil, out)
+	return resp, errors.WithStack(err)
 }
 
-func doHttp(req *http.Request, in, out interface{}) (*http.Response, error) {
+func doHttp(method string, uri *url.URL, in, out interface{}) (*http.Response, error) {
+	var body io.Reader
+	if in != nil {
+		if bodyReader, ok := in.(io.Reader); ok {
+			body = bodyReader
+		} else {
+			bodyBuff := bytes.NewBufferString("")
+			err := json.NewEncoder(bodyBuff).Encode(in)
+			if err != nil {
+				return nil, errors.WithStack(err)
+			}
+			body = bodyBuff
+		}
+	}
+
+	req, err := http.NewRequest(method, uri.String(), body)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
 	resp, err := DefaultHttpClient.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	defer func() {

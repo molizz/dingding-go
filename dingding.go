@@ -1,12 +1,12 @@
 package dingding
 
 type Config struct {
-	agentId   string
+	agentId   int64
 	appKey    string
 	appSecret string
 }
 
-func NewConfig(agentID, appKey, appSecret string) *Config {
+func NewConfig(agentID int64, appKey, appSecret string) *Config {
 	return &Config{
 		agentId:   agentID,
 		appKey:    appKey,
@@ -24,6 +24,7 @@ type Dingding struct {
 func New(cfg *Config, atm AccessTokenManager) *Dingding {
 	return &Dingding{
 		Api: &Api{
+			atm:    atm,
 			client: getHttpClient(),
 			cfg:    cfg,
 		},
@@ -32,11 +33,18 @@ func New(cfg *Config, atm AccessTokenManager) *Dingding {
 }
 
 func (d *Dingding) AccessToken() (string, error) {
-	token, err := d.atm.Get(d.cfg.agentId, func(agentId string) (*AccessToken, error) {
-		return d.Api.AccessToken()
-	})
+	token, err := d.atm.Get(d.cfg.agentId)
 	if err != nil {
+		if err == ErrTokenExpired {
+			at, err := d.Api.AccessToken()
+			if err != nil {
+				return "", err
+			}
+			d.atm.Set(d.cfg.agentId, at)
+			return at.AccessToken, nil
+		}
 		return "", err
 	}
+
 	return token, nil
 }

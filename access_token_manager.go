@@ -10,10 +10,11 @@ var (
 	ErrTokenExpired = errors.New("token expired")
 )
 
-type tokenExpiredFunc func(agentId string) (*AccessToken, error)
+type tokenExpiredFunc func(agentId int64) (*AccessToken, error)
 
 type AccessTokenManager interface {
-	Get(agentId string, f tokenExpiredFunc) (string, error)
+	Get(agentId int64) (string, error)
+	Set(agentID int64, accessToken *AccessToken)
 }
 
 type accessTokenEntity struct {
@@ -27,42 +28,33 @@ func (a *accessTokenEntity) expired() bool {
 
 var _ AccessTokenManager = (*DefaultAccessTokenManager)(nil)
 
-// 基于内存,默认的access token管理器
+// 默认基于内存的access token管理器
 type DefaultAccessTokenManager struct {
 	token sync.Map
 }
 
-func (a *DefaultAccessTokenManager) Get(agentId string, f tokenExpiredFunc) (string, error) {
-	tokenRaw, ok := a.token.Load(agentId)
+func NewDefaultAccessTokenManager() *DefaultAccessTokenManager {
+	return &DefaultAccessTokenManager{}
+}
+
+func (a *DefaultAccessTokenManager) Get(agentID int64) (string, error) {
+	tokenRaw, ok := a.token.Load(agentID)
 	if !ok {
-		tk, err := a.refresh(agentId, f)
-		if err != nil {
-			return "", err
-		}
-		return tk, nil
+		return "", ErrTokenExpired
 	}
+
 	token := tokenRaw.(*accessTokenEntity)
 	if token.expired() {
-		tk, err := a.refresh(agentId, f)
-		if err != nil {
-			return "", err
-		}
-		return tk, nil
+		return "", ErrTokenExpired
 	}
 	return token.token, nil
 }
 
-func (a *DefaultAccessTokenManager) refresh(agentId string, f tokenExpiredFunc) (string, error) {
-	at, err := f(agentId)
-	if err != nil {
-		return "", err
-	}
+func (a *DefaultAccessTokenManager) Set(agentID int64, accessToken *AccessToken) {
+	expireAt := time.Now().Add(time.Duration(accessToken.ExpiresIn-10) * time.Second) // 减10秒误差
 
-	expireAt := time.Now().Add(time.Duration(at.ExpiresIn-10) * time.Second) // 减10秒误差
-
-	a.token.Store(agentId, &accessTokenEntity{
-		token:     at.AccessToken,
+	a.token.Store(agentID, &accessTokenEntity{
+		token:     accessToken.AccessToken,
 		expiredAt: expireAt,
 	})
-	return at.AccessToken, nil
 }
