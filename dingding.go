@@ -28,6 +28,9 @@ type Dingding struct {
 
 	// Access Token manager
 	atm AccessTokenManager
+
+	// event hub
+	eventHub *EventHub
 }
 
 func New(cfg *Config, atm AccessTokenManager) *Dingding {
@@ -39,4 +42,11 @@ func New(cfg *Config, atm AccessTokenManager) *Dingding {
 		},
 		atm: atm,
 	}
+}
+
+func (d *Dingding) EventHub() *EventHub {
+	if d.eventHub == nil {
+		d.eventHub = NewEventHub(d.cfg.appKey, d.cfg.aesKey, d.cfg.token)
+	}
+	return d.eventHub
 }
