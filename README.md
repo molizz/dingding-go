@@ -21,7 +21,8 @@ accessToken, err := dd.AccessToken()
 
 // 处理事件订阅
 // hub内部已处理 check_url 事件
-// 如果你需要处理自定义的事件，请实现 EventProcessor 接口，并调用下方的Registor() 方法注册事件即可。具体也可以参考考 event_check_url.go 文件中处理 check_url 事件的实现。
+// 如果你需要处理自定义的事件，请实现 EventProcessor 接口，并调用下方的Registor() 方法注册事件即可。
+// 具体也可以参考考 event_check_url.go 文件中处理 check_url 事件的实现。
 //
 eventHub := dd.EventHub()
 eventHub.Register(EventProcessor)
