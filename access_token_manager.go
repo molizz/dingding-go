@@ -10,8 +10,6 @@ var (
 	ErrTokenExpired = errors.New("token expired")
 )
 
-type tokenExpiredFunc func(agentId int64) (*AccessToken, error)
-
 type AccessTokenManager interface {
 	Get(agentId int64) (string, error)
 	Set(agentID int64, accessToken *AccessToken)
