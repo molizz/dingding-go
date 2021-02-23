@@ -4,6 +4,10 @@ type Config struct {
 	agentId   int64
 	appKey    string
 	appSecret string
+
+	// event subcription
+	aesKey string
+	token  string
 }
 
 func NewConfig(agentID int64, appKey, appSecret string) *Config {
@@ -12,6 +16,11 @@ func NewConfig(agentID int64, appKey, appSecret string) *Config {
 		appKey:    appKey,
 		appSecret: appSecret,
 	}
+}
+
+func (c *Config) SetEventSubcription(aesKey, token string) {
+	c.aesKey = aesKey
+	c.token = token
 }
 
 type Dingding struct {
