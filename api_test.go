@@ -26,3 +26,9 @@ func TestApi_AccessToken(t *testing.T) {
 	assert.Equal(t, nil, err)
 	assert.NotEmpty(t, at)
 }
+
+func TestApi_DepartmentList(t *testing.T) {
+	resp, err := testDingding.DepartmentList(0)
+	assert.Equal(t, nil, err)
+	assert.Equal(t, 1, len(resp.Departments))
+}

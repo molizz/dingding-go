@@ -51,3 +51,15 @@ type TextMessageRequest struct {
 	UseridList string       `json:"userid_list"`
 	Msg        messageInner `json:"msg"`
 }
+
+type departmentInner struct {
+	ID              int64  `json:"id"`
+	Name            string `json:"name"`
+	ParentID        int    `json:"parentid"`
+	CreateDeptGroup bool   `json:"createDeptGroup"`
+	AutoAddUser     bool   `json:"autoAddUser"`
+}
+type DepartmentResponse struct {
+	apiResultBase
+	Departments []*departmentInner `json:"department"`
+}
