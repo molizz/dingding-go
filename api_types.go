@@ -91,3 +91,13 @@ type UserIDResponse struct {
 	apiResultBase
 	UserID string `json:"userid"`
 }
+
+type UserResponse struct {
+	apiResultBase
+
+	UserID      string `json:"userid"`
+	Name        string `json:"name"`
+	Departments []int  `json:"department"`
+	UnionID     string `json:"unionid"`
+	Email       string `json:"email"`
+}
