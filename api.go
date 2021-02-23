@@ -139,9 +139,17 @@ func (a *Api) Department(depID int64) (*DepartmentResponse, error) {
 
 // DepartmentMembersCount 获取部门成员数量
 func (a *Api) DepartmentMembersCount(depID int64) (int, error) {
-	accessToken, err := a.AccessToken()
+	resp, err := a.DepartmentMemberIDs(depID)
 	if err != nil {
 		return 0, err
+	}
+	return len(resp.UserIds), nil
+}
+
+func (a *Api) DepartmentMemberIDs(depID int64) (*DepartmentMemeberCountResponse, error) {
+	accessToken, err := a.AccessToken()
+	if err != nil {
+		return nil, err
 	}
 
 	u, _ := URLParse(
@@ -153,7 +161,7 @@ func (a *Api) DepartmentMembersCount(depID int64) (int, error) {
 	depResponse := new(DepartmentMemeberCountResponse)
 	_, err = httpGet(u, depResponse)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
-	return len(depResponse.UserIds), nil
+	return depResponse, nil
 }
