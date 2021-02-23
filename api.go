@@ -13,6 +13,7 @@ const (
 	URLDepartment             = "https://oapi.dingtalk.com/department/get"
 	URLDepartmentMemberIDs    = "https://oapi.dingtalk.com/user/getDeptMember"
 	URLUserIDByUnionid        = "https://oapi.dingtalk.com/user/getUseridByUnionid"
+	URLUserIDByMoblie         = "https://oapi.dingtalk.com/user/get_by_mobile"
 )
 
 type Api struct {
@@ -177,6 +178,26 @@ func (a *Api) UserIDByUnionID(unionID int64) (*UserIDResponse, error) {
 		URLUserIDByUnionid,
 		"access_token", accessToken,
 		"unionid", strconv.FormatInt(unionID, 10),
+	)
+
+	userIDResponse := new(UserIDResponse)
+	_, err = httpGet(u, userIDResponse)
+	if err != nil {
+		return nil, err
+	}
+	return userIDResponse, nil
+}
+
+func (a *Api) UserIDByMobile(mobile string) (*UserIDResponse, error) {
+	accessToken, err := a.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	u, _ := URLParse(
+		URLUserIDByMoblie,
+		"access_token", accessToken,
+		"mobile", mobile,
 	)
 
 	userIDResponse := new(UserIDResponse)
