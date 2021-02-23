@@ -94,8 +94,8 @@ func (a *Api) DepartmentList(rootDepID int64) (*DepartmentsResponse, error) {
 }
 
 // depID: 部门id
-// offset: 分页的偏移量,从0开始
-// size: 每次返回的用户数量
+// offset: 分页的偏移量,从0开始，每次加size
+// size: 每次返回的用户数量，最大100
 //
 func (a *Api) DepartmentMembers(depID int64, offset, size int) (*DepartmentMemberResponse, error) {
 	accessToken, err := a.AccessToken()
@@ -124,7 +124,7 @@ func (a *Api) Department(depID int64) (*DepartmentResponse, error) {
 	}
 
 	u, _ := URLParse(
-		URLDepartmentMemberByPage,
+		URLDepartment,
 		"access_token", accessToken,
 		"id", strconv.FormatInt(depID, 10),
 	)
