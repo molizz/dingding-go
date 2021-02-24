@@ -13,6 +13,6 @@ func (e *EventCheckURL) Type() string {
 	return "check_url"
 }
 
-func (e *EventCheckURL) Process(session *EventSession, decryptEventBody []byte) (interface{}, error) {
-	return nil, nil
+func (e *EventCheckURL) Process(decryptBody []byte) error {
+	return nil
 }

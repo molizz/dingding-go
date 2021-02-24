@@ -9,11 +9,6 @@ import (
 
 var ErrInvalidEventType = errors.New("invalid event type.")
 
-type EventSession struct {
-	RequestBody io.ReadCloser
-	encryptBody *EncryptBody
-}
-
 type EncryptBody struct {
 	MsgSignature string `json:"msg_signature"`
 	TimeStamp    string `json:"timeStamp"`
@@ -27,7 +22,7 @@ type EventBody struct {
 
 type EventProcessor interface {
 	Type() string
-	Process(session *EventSession, decryptEventBody []byte) (interface{}, error)
+	Process(decryptMsg []byte) error
 }
 
 type EventHub struct {
@@ -57,9 +52,9 @@ func (e *EventHub) Register(p EventProcessor) {
 	e.hub[p.Type()] = p
 }
 
-func (e *EventHub) Do(session *EventSession) (interface{}, error) {
+func (e *EventHub) Do(requestBody io.Reader) (interface{}, error) {
 	var encryptBody = new(EncryptBody)
-	err := json.NewDecoder(session.RequestBody).Decode(encryptBody)
+	err := json.NewDecoder(requestBody).Decode(encryptBody)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -81,15 +76,13 @@ func (e *EventHub) Do(session *EventSession) (interface{}, error) {
 	}
 
 	if p, ok := e.hub[body.EventType]; ok {
-		session.encryptBody = encryptBody
-		_, err = p.Process(session, []byte(decryptMsg))
+		err = p.Process([]byte(decryptMsg))
 		if err != nil {
 			return nil, err
 		} else {
 			// 返回 success
-			en := session.encryptBody
 			return NewDingTalkCrypto(e.token, e.aesKey, e.appKey).
-				GetDecryptMsg(en.MsgSignature, en.TimeStamp, en.Nonce, "success")
+				GetDecryptMsg(signature, timestamp, nonce, "success")
 		}
 	}
 	return nil, ErrInvalidEventType
