@@ -14,6 +14,5 @@ func (e *EventCheckURL) Type() string {
 }
 
 func (e *EventCheckURL) Process(session *EventSession, decryptEventBody []byte) (interface{}, error) {
-	en := session.encryptBody
-	return NewDingTalkCrypto(e.token, e.aesKey, e.appKey).GetDecryptMsg(en.MsgSignature, en.TimeStamp, en.Nonce, "success")
+	return nil, nil
 }

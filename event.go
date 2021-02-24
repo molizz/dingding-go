@@ -82,7 +82,15 @@ func (e *EventHub) Do(session *EventSession) (interface{}, error) {
 
 	if p, ok := e.hub[body.EventType]; ok {
 		session.encryptBody = encryptBody
-		return p.Process(session, []byte(decryptMsg))
+		_, err = p.Process(session, []byte(decryptMsg))
+		if err != nil {
+			return nil, err
+		} else {
+			// 返回 success
+			en := session.encryptBody
+			return NewDingTalkCrypto(e.token, e.aesKey, e.appKey).
+				GetDecryptMsg(en.MsgSignature, en.TimeStamp, en.Nonce, "success")
+		}
 	}
 	return nil, ErrInvalidEventType
 }
