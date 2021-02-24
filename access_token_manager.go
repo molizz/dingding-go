@@ -11,7 +11,7 @@ var (
 )
 
 type AccessTokenManager interface {
-	Get(agentId int64) (string, error)
+	Get(agentID int64) (string, error)
 	Set(agentID int64, accessToken *AccessToken)
 }
 
