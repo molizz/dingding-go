@@ -34,6 +34,9 @@ type Dingding struct {
 }
 
 func New(cfg *Config, atm AccessTokenManager) *Dingding {
+	if atm == nil {
+		atm = NewDefaultAccessTokenManager()
+	}
 	return &Dingding{
 		Api: &Api{
 			atm:    atm,
