@@ -101,3 +101,7 @@ type UserResponse struct {
 	UnionID     string `json:"unionid"`
 	Email       string `json:"email"`
 }
+
+type AuthScopesResponse struct {
+	apiResultBase
+}
