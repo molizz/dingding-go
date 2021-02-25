@@ -75,7 +75,7 @@ type DepartmentMemeberCountResponse struct {
 	UserIds []string `json:"userIds"`
 }
 
-type memberInner struct {
+type Member struct {
 	UserID      string `json:"userid"`
 	Name        string `json:"name"`
 	Departments []int  `json:"department"`
@@ -84,7 +84,8 @@ type memberInner struct {
 }
 type DepartmentMemberResponse struct {
 	ApiResultBase
-	UserList []*memberInner `json:"userlist"`
+	HasMore  bool      `json:"hasMore"`
+	UserList []*Member `json:"userlist"`
 }
 
 type UserIDResponse struct {

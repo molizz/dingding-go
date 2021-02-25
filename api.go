@@ -16,6 +16,7 @@ const (
 	URLUserIDByMoblie         = "https://oapi.dingtalk.com/user/get_by_mobile"
 	URLUserByID               = "https://oapi.dingtalk.com/user/get"
 	URLAuthScopes             = "https://oapi.dingtalk.com/auth/scopes"
+	URLDepartmentMembers      = "https://oapi.dingtalk.com/user/list"
 )
 
 type Api struct {
@@ -116,6 +117,42 @@ func (a *Api) DepartmentMembers(depID int64, offset, size int) (*DepartmentMembe
 		"department_id", strconv.FormatInt(depID, 10),
 		"offset", strconv.FormatInt(int64(offset), 10),
 		"size", strconv.FormatInt(int64(size), 10),
+	)
+
+	memberResponse := new(DepartmentMemberResponse)
+	_, err = httpGet(u, memberResponse)
+	return memberResponse, err
+}
+
+func (a *Api) DepartmentAllMembers(depID int64) ([]*Member, error) {
+	offset := 0
+	size := 100
+	hasMore := true
+	resp := make([]*Member, 0, 100)
+
+	for hasMore {
+		result, err := a.DepartmentMembers(depID, offset, size)
+		if err != nil {
+			return nil, err
+		}
+
+		hasMore = result.HasMore
+		resp = append(resp, result.UserList...)
+		offset += size
+	}
+	return resp, nil
+}
+
+func (a *Api) FetchAllMembersByDepartmentID(depID int64) (*DepartmentMemberResponse, error) {
+	accessToken, err := a.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	u, _ := URLParse(
+		URLDepartmentMembers,
+		"access_token", accessToken,
+		"department_id", strconv.FormatInt(depID, 10),
 	)
 
 	memberResponse := new(DepartmentMemberResponse)
