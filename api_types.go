@@ -102,6 +102,12 @@ type UserResponse struct {
 	Email       string `json:"email"`
 }
 
+type authOrgScopesInner struct {
+	AuthedUser []string `json:"authed_user"`
+	AuthedDept []int    `json:"authed_dept"`
+}
 type AuthScopesResponse struct {
 	ApiResultBase
+	AuthOrgScopesInner []*authOrgScopesInner `json:"auth_org_scopes"`
+	AuthUserField      []string              `json:"auth_user_field"`
 }
