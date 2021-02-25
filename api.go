@@ -16,7 +16,7 @@ const (
 	URLUserIDByMoblie         = "https://oapi.dingtalk.com/user/get_by_mobile"
 	URLUserByID               = "https://oapi.dingtalk.com/user/get"
 	URLAuthScopes             = "https://oapi.dingtalk.com/auth/scopes"
-	URLDepartmentMembers      = "https://oapi.dingtalk.com/user/list"
+	URLDepartmentMembers      = "https://oapi.dingtalk.com/user/list" // NOTE 这个接口钉钉文档中已不存在，可能未来某个时候就无法使用了
 )
 
 type Api struct {
