@@ -1,6 +1,7 @@
 package dingding
 
 type Config struct {
+	corpId    string
 	agentId   int64
 	appKey    string
 	appSecret string
@@ -10,8 +11,9 @@ type Config struct {
 	token  string
 }
 
-func NewConfig(agentID int64, appKey, appSecret string) *Config {
+func NewConfig(corpId string, agentID int64, appKey, appSecret string) *Config {
 	return &Config{
+		corpId:    corpId,
 		agentId:   agentID,
 		appKey:    appKey,
 		appSecret: appSecret,
