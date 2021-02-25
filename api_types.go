@@ -7,16 +7,16 @@ type resultError interface {
 	ErrorMsg() string
 }
 
-type apiResultBase struct {
+type ApiResultBase struct {
 	Errcode int    `json:"errcode"`
 	Errmsg  string `json:"errmsg"`
 }
 
-func (a *apiResultBase) HasError() bool {
+func (a *ApiResultBase) HasError() bool {
 	return a.Errcode != 0
 }
 
-func (a *apiResultBase) ErrorMsg() string {
+func (a *ApiResultBase) ErrorMsg() string {
 	if !a.HasError() {
 		return ""
 	}
@@ -26,13 +26,13 @@ func (a *apiResultBase) ErrorMsg() string {
 }
 
 type AccessToken struct {
-	apiResultBase
+	ApiResultBase
 	ExpiresIn   int    `json:"expires_in"`
 	AccessToken string `json:"access_token"`
 }
 
 type TextMessageResponse struct {
-	apiResultBase
+	ApiResultBase
 	RequestID string `json:"request_id"`
 	TaskID    int64  `json:"task_id"`
 }
@@ -60,18 +60,18 @@ type departmentInner struct {
 	AutoAddUser     bool   `json:"autoAddUser"`
 }
 type DepartmentsResponse struct {
-	apiResultBase
+	ApiResultBase
 	Departments []*departmentInner `json:"department"`
 }
 
 type DepartmentResponse struct {
-	apiResultBase
+	ApiResultBase
 	departmentInner
 	Order int `json:"order"`
 }
 
 type DepartmentMemeberCountResponse struct {
-	apiResultBase
+	ApiResultBase
 	UserIds []string `json:"userIds"`
 }
 
@@ -83,17 +83,17 @@ type memberInner struct {
 	Email       string `json:"email"`
 }
 type DepartmentMemberResponse struct {
-	apiResultBase
+	ApiResultBase
 	UserList []*memberInner `json:"userlist"`
 }
 
 type UserIDResponse struct {
-	apiResultBase
+	ApiResultBase
 	UserID string `json:"userid"`
 }
 
 type UserResponse struct {
-	apiResultBase
+	ApiResultBase
 
 	UserID      string `json:"userid"`
 	Name        string `json:"name"`
@@ -103,5 +103,5 @@ type UserResponse struct {
 }
 
 type AuthScopesResponse struct {
-	apiResultBase
+	ApiResultBase
 }
