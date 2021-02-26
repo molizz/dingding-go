@@ -1,28 +1,28 @@
 package dingding
 
 type Config struct {
-	corpId    string
-	agentId   int64
-	appKey    string
-	appSecret string
+	CorpId    string
+	AgentId   int64
+	AppKey    string
+	AppSecret string
 
 	// event subcription
-	aesKey string
-	token  string
+	AesKey string
+	Token  string
 }
 
 func NewConfig(corpId string, agentID int64, appKey, appSecret string) *Config {
 	return &Config{
-		corpId:    corpId,
-		agentId:   agentID,
-		appKey:    appKey,
-		appSecret: appSecret,
+		CorpId:    corpId,
+		AgentId:   agentID,
+		AppKey:    appKey,
+		AppSecret: appSecret,
 	}
 }
 
 func (c *Config) SetEventSubcription(aesKey, token string) {
-	c.aesKey = aesKey
-	c.token = token
+	c.AesKey = aesKey
+	c.Token = token
 }
 
 type Dingding struct {
@@ -51,7 +51,7 @@ func New(cfg *Config, atm AccessTokenManager) *Dingding {
 
 func (d *Dingding) EventHub() *EventHub {
 	if d.eventHub == nil {
-		d.eventHub = NewEventHub(d.cfg.appKey, d.cfg.aesKey, d.cfg.token)
+		d.eventHub = NewEventHub(d.cfg.AppKey, d.cfg.AesKey, d.cfg.Token)
 	}
 	return d.eventHub
 }

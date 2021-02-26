@@ -11,9 +11,9 @@ import (
 var testDingding *Dingding
 var testAgentID, _ = strconv.Atoi(os.Getenv("DINGDING_AGENTID"))
 var testCfg = &Config{
-	agentId:   int64(testAgentID),
-	appKey:    os.Getenv("DINGDING_KEY"),
-	appSecret: os.Getenv("DINGDING_SECRET"),
+	AgentId:   int64(testAgentID),
+	AppKey:    os.Getenv("DINGDING_KEY"),
+	AppSecret: os.Getenv("DINGDING_SECRET"),
 }
 
 func init() {

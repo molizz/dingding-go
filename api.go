@@ -28,14 +28,14 @@ type Api struct {
 }
 
 func (a *Api) AccessToken() (string, error) {
-	token, err := a.atm.Get(a.cfg.agentId)
+	token, err := a.atm.Get(a.cfg.AgentId)
 	if err != nil {
 		if err == ErrTokenExpired {
 			at, err := a.doAccessToken()
 			if err != nil {
 				return "", err
 			}
-			a.atm.Set(a.cfg.agentId, at)
+			a.atm.Set(a.cfg.AgentId, at)
 			return at.AccessToken, nil
 		}
 		return "", err
@@ -45,7 +45,7 @@ func (a *Api) AccessToken() (string, error) {
 }
 
 func (a *Api) doAccessToken() (*AccessToken, error) {
-	u, _ := URLParse(URLAccessToken, "appkey", a.cfg.appKey, "appsecret", a.cfg.appSecret)
+	u, _ := URLParse(URLAccessToken, "appkey", a.cfg.AppKey, "appsecret", a.cfg.AppSecret)
 
 	var result = new(AccessToken)
 	_, err := httpGet(u, result)
@@ -63,7 +63,7 @@ func (a *Api) SendTextMessage(msg string, toUserIDs []string) error {
 
 	u, _ := URLParse(URLSendMessage, "access_token", accessToken)
 	req := &TextMessageRequest{
-		AgentID:    a.cfg.agentId,
+		AgentID:    a.cfg.AgentId,
 		UseridList: strings.Join(toUserIDs, ","),
 		Msg: messageInner{
 			MsgType: "text",
