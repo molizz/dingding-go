@@ -34,7 +34,27 @@ func (h *HttpServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println("---", string(b))
+
+	h.decode(body)
+
 	w.Write(b)
+}
+
+func (h *HttpServer) decode(b map[string]string) {
+	encrypt := b["encrypt"]
+	msg_signature := b["msg_signature"]
+	nonce := b["nonce"]
+	timeStamp := b["timeStamp"]
+
+	body, err := dingding.NewDingTalkCrypto(
+		"EPxW3vTcLtX83hjvnGFy9E30NkTeVjtp61lCONytZxNZjIZL",
+		"iziMCs0M3iU1lK5oeFr7Ac3IIPJUnW4IiGDwYmu8y06",
+		"dingmkoxn5exihsog95s").GetDecryptMsg(msg_signature, timeStamp, nonce, encrypt)
+	if err != nil {
+		fmt.Println("====解密err: ", err)
+	}
+	fmt.Println("===解密后：", body)
 }
 
 func main() {
