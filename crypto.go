@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
+	"crypto/hmac"
 	"crypto/rand"
 	"crypto/sha1"
+	"crypto/sha256"
 	"encoding/base64"
 	"encoding/binary"
 	"errors"
@@ -129,6 +131,13 @@ func (c *DingTalkCrypto) CreateSignature(token, timestamp, nonce, msg string) st
 // 验证数据签名
 func (c *DingTalkCrypto) VerificationSignature(token, timestamp, nonce, msg, sigture string) bool {
 	return c.CreateSignature(token, timestamp, nonce, msg) == sigture
+}
+
+func Signature(data string, secret string) string {
+	h := hmac.New(sha256.New, []byte(secret))
+	h.Write([]byte(data))
+	s := base64.StdEncoding.EncodeToString(h.Sum(nil))
+	return s // url.QueryEscape(s)
 }
 
 // 解密补位

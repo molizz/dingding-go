@@ -3,6 +3,7 @@ package dingding
 import (
 	"strconv"
 	"strings"
+	"time"
 )
 
 const (
@@ -17,6 +18,7 @@ const (
 	URLUserByID               = "https://oapi.dingtalk.com/user/get"
 	URLAuthScopes             = "https://oapi.dingtalk.com/auth/scopes"
 	URLDepartmentMembers      = "https://oapi.dingtalk.com/user/list" // NOTE 这个接口钉钉文档中已不存在，可能未来某个时候就无法使用了
+	URLGetUserInfoByCode      = "https://oapi.dingtalk.com/sns/getuserinfo_bycode"
 )
 
 type Api struct {
@@ -284,4 +286,30 @@ func (a *Api) AuthScopes() (*AuthScopesResponse, error) {
 		return nil, err
 	}
 	return authScopesResponse, nil
+}
+
+// accessKey：登录开发者后台，选择应用开发 > 移动接入应用 > 登录所看到应用的appId
+//
+func (a *Api) GetUserInfoByCode(authCode, accessKey, appSecret string) (*UserInfoResponse, error) {
+	timestamp := strconv.FormatInt(time.Now().UnixNano()/1000/1000, 10)
+	signature := Signature(timestamp, appSecret)
+
+	u, _ := URLParse(
+		URLGetUserInfoByCode,
+		"accessKey", accessKey,
+		"timestamp", timestamp,
+		"signature", signature,
+	)
+
+	req := map[string]string{
+		"tmp_auth_code": authCode,
+	}
+
+	userInfoResponse := new(UserInfoResponse)
+
+	_, err := httpPost(u, req, userInfoResponse)
+	if err != nil {
+		return nil, err
+	}
+	return userInfoResponse, nil
 }

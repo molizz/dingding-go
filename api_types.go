@@ -103,6 +103,17 @@ type UserResponse struct {
 	Email       string `json:"email"`
 }
 
+type userInfoInner struct {
+	Nick                 string `json:"nick"`
+	UnionID              string `json:"unionid"`
+	OpenID               string `json:"openid"`
+	MainOrgAuthHighLevel bool   `json:"main_org_auth_high_level"`
+}
+type UserInfoResponse struct {
+	ApiResultBase
+	UserInfo *userInfoInner `json:"user_info"`
+}
+
 type authOrgScopesInner struct {
 	AuthedUser []string `json:"authed_user"`
 	AuthedDept []int    `json:"authed_dept"`
