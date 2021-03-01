@@ -45,3 +45,9 @@ func TestApi_GetUserInfoByCode(t *testing.T) {
 	assert.Equal(t, nil, err)
 	assert.NotEmpty(t, got)
 }
+
+func TestApi_UserIDByUnionID(t *testing.T) {
+	got, err := testDingding.UserIDByUnionID("manager9961")
+	assert.Equal(t, nil, err)
+	assert.NotEmpty(t, got)
+}

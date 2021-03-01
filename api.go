@@ -209,7 +209,7 @@ func (a *Api) DepartmentMemberIDs(depID int64) (*DepartmentMemeberCountResponse,
 	return depResponse, nil
 }
 
-func (a *Api) UserIDByUnionID(unionID int64) (*UserIDResponse, error) {
+func (a *Api) UserIDByUnionID(unionID string) (*UserIDResponse, error) {
 	accessToken, err := a.AccessToken()
 	if err != nil {
 		return nil, err
@@ -218,7 +218,7 @@ func (a *Api) UserIDByUnionID(unionID int64) (*UserIDResponse, error) {
 	u, _ := URLParse(
 		URLUserIDByUnionid,
 		"access_token", accessToken,
-		"unionid", strconv.FormatInt(unionID, 10),
+		"unionid", unionID,
 	)
 
 	userIDResponse := new(UserIDResponse)
