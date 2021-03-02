@@ -17,6 +17,8 @@ var testCfg = &Config{
 	AesKey:    os.Getenv("DINGDING_AESKEY"),
 	Token:     os.Getenv("DINGDING_TOKEN"),
 }
+var AccessKey = os.Getenv("DINGDING_ACCESSKEY")
+var AppSecret = os.Getenv("DINGDING_APPSECRET")
 
 func init() {
 	mg := NewDefaultAccessTokenManager()
@@ -37,9 +39,9 @@ func TestApi_DepartmentList(t *testing.T) {
 
 func TestApi_GetUserInfoByCode(t *testing.T) {
 	got, err := testDingding.GetUserInfoByCode(
-		"04412de768a538329c64c75278b14df6",
-		os.Getenv("DINGDING_ACCESSKEY"),
-		os.Getenv("DINGDING_APPSECRET"),
+		"code",
+		AccessKey,
+		AppSecret,
 	)
 
 	assert.Equal(t, nil, err)
@@ -47,7 +49,12 @@ func TestApi_GetUserInfoByCode(t *testing.T) {
 }
 
 func TestApi_UserIDByUnionID(t *testing.T) {
-	got, err := testDingding.UserIDByUnionID("manager9961")
+	got, err := testDingding.UserIDByUnionID("fUqL5R7MCN2iiWgMbPolsngiEiE")
 	assert.Equal(t, nil, err)
 	assert.NotEmpty(t, got)
+}
+
+func TestApi_SendTextMessage(t *testing.T) {
+	err := testDingding.SendTextMessage("test", []string{"manager9961"})
+	assert.Equal(t, nil, err)
 }
