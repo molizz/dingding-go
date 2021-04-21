@@ -17,7 +17,7 @@ var testCfg = &Config{
 	AesKey:    os.Getenv("DINGDING_AESKEY"),
 	Token:     os.Getenv("DINGDING_TOKEN"),
 }
-var AccessKey = os.Getenv("DINGDING_ACCESSKEY")
+var AppID = os.Getenv("DINGDING_APPID")
 var AppSecret = os.Getenv("DINGDING_APPSECRET")
 
 func init() {
@@ -37,10 +37,22 @@ func TestApi_DepartmentList(t *testing.T) {
 	assert.Equal(t, 1, len(resp.Departments))
 }
 
+func TestApi_DepartmentWithID(t *testing.T) {
+	members, err := testDingding.DepartmentAllMembers(1)
+	assert.Equal(t, nil, err)
+	assert.Greater(t, len(members), 1)
+}
+
+func TestApi_FetchAllMembersByDepartmentID(t *testing.T) {
+	resp, err := testDingding.FetchAllMembersByDepartmentID(1)
+	assert.Equal(t, nil, err)
+	assert.Greater(t, len(resp.UserList), 1)
+}
+
 func TestApi_GetUserInfoByCode(t *testing.T) {
 	got, err := testDingding.GetUserInfoByCode(
 		"code",
-		AccessKey,
+		AppID,
 		AppSecret,
 	)
 
