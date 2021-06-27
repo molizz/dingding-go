@@ -46,6 +46,7 @@ func NewDingTalkCrypto(token, encodingAESKey, appKey string) *DingTalkCrypto {
 		BKey:           bkey,
 		Block:          block,
 	}
+
 	return c
 }
 
