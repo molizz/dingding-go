@@ -22,6 +22,9 @@ func (a *ApiResultBase) ErrorMsg() string {
 	}
 
 	msg := DingdingErrorSet[a.Errcode]
+	if len(a.Errmsg) > 0 {
+		msg = fmt.Sprintf("%s(%s)", msg, a.Errmsg)
+	}
 	return fmt.Sprintf("%d:%s", a.Errcode, msg)
 }
 
